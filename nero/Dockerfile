@@ -1,11 +1,14 @@
-FROM --platform=$BUILDPLATFORM python:3.10.12-alpine3.18 AS base
+FROM --platform=$BUILDPLATFORM python:3.10.12-bookworm AS base
 WORKDIR /home/django/backend
-RUN adduser -D django
-RUN apk update && apk add --no-cache netcat-openbsd
+RUN useradd -m -s /bin/bash django
+RUN apt update && apt install -y netcat-openbsd && \
+    apt clean all
 
 COPY --chown=django . /home/django/backend
 COPY ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+RUN mkdir /home/django/venv && \
+    chown -R django:django /home/django/venv
 
 USER django
 RUN  python3 -m venv /home/django/venv && \
