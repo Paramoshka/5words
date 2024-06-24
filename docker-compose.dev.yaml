@@ -1,0 +1,84 @@
+version: "3.9"
+services:
+
+  backend:
+    build:
+      context: ./backend
+      target: dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+    volumes:
+      - "./backend/:/home/django/backend/"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+
+  redis:
+    image: redis:7.0.15-alpine3.19
+    restart: unless-stopped
+
+#  frontend:
+#    build:
+#      context: ./frontend
+#      target: dev
+#    volumes:
+#      - "./frontend/personal-account/src:/usr/src/app/src"
+#      - "./frontend/personal-account/public:/usr/src/app/public"
+#    environment:
+#      NODE_ENV: production
+#    ports:
+#      - "3000:3000"
+#      - "9229:9229"
+#    restart: unless-stopped
+#    depends_on:
+#      - backend
+
+#  parser:
+#    build:
+#      context: ./backend
+#    restart: unless-stopped
+#    environment:
+#      PARSER: true
+#      POSTGRES_USER: ${POSTGRES_USER}
+#      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+#      POSTGRES_DB: ${POSTGRES_DB}
+
+  postgres:
+    image: postgres:16.3-alpine3.19
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - "postgres-data:/var/lib/postgresql/data"
+  pgadmin:
+    image: dpage/pgadmin4:8.6
+    restart: unless-stopped
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "secret"
+    volumes:
+      - "pg-admin:/var/lib/pgadmin"
+
+  proxy:
+    build:
+      context: ./nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      SERVER_NAME: ${SERVER_NAME}
+    command: ["nginx-debug", "-g", "daemon off;"]
+volumes:
+  postgres-data:
+  pg-admin:
