@@ -1,17 +1,18 @@
 FROM --platform=$BUILDPLATFORM python:3.10.12-bookworm AS base
-WORKDIR /home/django/backend
+
 RUN useradd -m -s /bin/bash django
+WORKDIR /home/django/backend
 RUN apt update && apt install -y netcat-openbsd && \
     apt clean all
 
 COPY --chown=django . /home/django/backend
 COPY ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-RUN mkdir /home/django/venv && \
-    chown -R django:django /home/django/venv
+#RUN mkdir /home/django/venv && \
+#    chown -R django:django /home/django/venv
 
 USER django
-RUN  python3 -m venv /home/django/venv && \
+RUN  python3 -m venv /home/django/.venv && \
      pip3 install -r requirements.txt --no-cache-dir
 EXPOSE 8000
 ENTRYPOINT ["/entrypoint.sh"]
