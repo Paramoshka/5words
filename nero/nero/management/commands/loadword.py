@@ -11,6 +11,8 @@ class Command(BaseCommand):
         words = set()
         try:
             lines = open('russian.txt', 'r', encoding='windows-1251').readlines()
+            add_header_to_csv()
+
             for line in lines:
                 if len(line) == 6:
                     words.add(line.lower())
@@ -34,5 +36,13 @@ def write_word_to_csv(word, vector):
     with open('words.csv', 'a', newline='') as csvfile:
         fieldnames = ['word', 'vector']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-       # writer.writeheader()
         writer.writerow({'word': word, 'vector': vector})
+
+
+def add_header_to_csv():
+    with open('words.csv', 'a', newline='') as csvfile:
+        fieldnames = ['word', 'vector']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+
+    csvfile.close()
