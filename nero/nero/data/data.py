@@ -1,7 +1,6 @@
 import csv
 import numpy as np
-import torch
-from torch import nn
+
 
 
 class Data(object):
@@ -21,11 +20,18 @@ class Data(object):
             d.pop()
             arr.append(np.array(d))
 
-        int_arr = np.empty((len(arr), len(arr[0])))
+        self.int_arr = np.empty((len(arr), len(arr[0])))
 
         for k, v in enumerate(arr):
-            int_arr[k] = v
+            self.int_arr[k] = v
 
-        self.tensor = torch.tensor(int_arr, dtype=torch.float)
+        mask = np.random.binomial(n=1, p=0.5, size=(len(arr), len(arr[0])))
 
-        print(self.tensor[:3])
+        self.train_arr = np.multiply(self.int_arr, mask)
+
+    """
+    return arrays n x n, labels and train data where random zeros
+    """
+    def load_data(self):
+        return self.int_arr, self.train_arr
+
