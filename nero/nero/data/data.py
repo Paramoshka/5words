@@ -31,6 +31,9 @@ class Data(object):
 
     """
     return arrays n x n, labels and train data where random zeros
+    [26., 13., 32., 23.,  6.,  0.],
+    .....
+    [21., 19.,  1., 20.,  1.,  0.]
     """
     def load_data(self):
         return self.int_arr, self.train_arr
