@@ -17,7 +17,7 @@ class Command(BaseCommand):
     loss = nn.CrossEntropyLoss()
     # Model
     # 1 because we enter a single number/letter per step.
-    rnn_model = RNN(1, hidden_size, len(alphabet))
+    rnn_model = RNN(1, hidden_size, len(alphabet), batch_size)
     optimizer = optim.RMSprop(rnn_model.parameters(), lr=0.001)
 
     def handle(self, *args, **options):
