@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 
 #https://www.appsilon.com/post/visualize-pytorch-neural-networks
-class Predictor(nn.Module):
+class RNN(nn.Module):
     def __init__(self, input_size: int, hidden_size: int, output_size: int) -> None:
         """
         input_size: Number of features of your input vector

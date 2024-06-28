@@ -1,6 +1,31 @@
+import torch
 from torch import optim, nn
-from torch.nn import RNN
+
 from torch.utils.data import DataLoader
+
+from nero.data.model import RNN
 
 
 def train(model: RNN, data: DataLoader, epochs: int, optimizer: optim.Optimizer, loss_fn: nn.Module) -> None:
+    """
+    Trains the model for the specified number of epochs
+    Inputs
+    ------
+    model: RNN model to train
+    data: Iterable DataLoader
+    epochs: Number of epochs to train the model
+    optimizer: Optimizer to use for each epoch
+    loss_fn: Function to calculate loss
+    """
+
+    model.train()
+
+    for epoch in range(epochs):
+        for batch in data:
+            # skip batch if it doesnt match with the batch_size
+            if batch.shape[0] != 64:
+                continue
+            hidden = model.init_zero_hidden(batch_size=64)
+            for c in range(batch.shape[1]):
+
+
