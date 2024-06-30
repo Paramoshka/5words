@@ -1,9 +1,11 @@
+import numpy as np
 import torch
 from torch import optim, nn
 
 from torch.utils.data import DataLoader
 
 from nero.data.model import RNN
+from nero.data.alphabet import alphabet
 
 
 def train(model: RNN, data: DataLoader, epochs: int, optimizer: optim.Optimizer, loss_fn: nn.Module) -> None:
@@ -20,15 +22,14 @@ def train(model: RNN, data: DataLoader, epochs: int, optimizer: optim.Optimizer,
 
     model.train()
 
-    for epoch in range(epochs):
+    for epoch in range(1):
         for batch in data:
             # skip batch if it doesnt match with the batch_size
             if batch.shape[0] != model.batch_size:
                 continue
-            hidden = model.init_zero_hidden(batch_size=model.batch_size)
+
+            hidden = model.init_zero_hidden(batch_size=36)
+
             for c in range(batch.shape[1]):
-                #print("Batch: " + str(batch[:, c]) + "\n")
-                out = model(batch[:, c].reshape(batch.shape[0], 1), hidden)
-                print(out)
-                #out, hidden = model(batch[:, c].reshape(batch.shape[0], 1), hidden)
+                out, hidden = model(batch[c], hidden)
 
