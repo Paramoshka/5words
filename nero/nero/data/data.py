@@ -5,6 +5,7 @@ import numpy as np
 
 class Data(object):
 
+    labels = []
     def __init__(self):
         data = []
         arr = list()
@@ -13,6 +14,7 @@ class Data(object):
             reader = csv.DictReader(csvfile)
             for row in reader:
                 data.append(np.array(row['vector']))
+                self.labels.append(row['word'])
 
         for d in data:
             d = str(d).strip('[]')
@@ -36,5 +38,5 @@ class Data(object):
     [21., 19.,  1., 20.,  1.,  0.]
     """
     def load_data(self):
-        return self.int_arr, self.train_arr
+        return self.int_arr, self.labels,  self.train_arr, self.labels
 

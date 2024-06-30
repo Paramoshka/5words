@@ -12,15 +12,17 @@ class Command(BaseCommand):
 
     batch_size = 100
     hidden_size = 100
+    output_size = 100
     epochs = 5
     loss = nn.CrossEntropyLoss()
+    input_size = 6
     # Model
     # 1 because we enter a single number/letter per step.
-    rnn_model = RNN(6, hidden_size, len(alphabet), batch_size)
+    rnn_model = RNN(input_size, hidden_size, len(alphabet), output_size)
     optimizer = optim.RMSprop(rnn_model.parameters(), lr=0.001)
 
     def handle(self, *args, **options):
         self.stdout.write("Training neuron", ending="")
-        train_data, test_data = Data().load_data()
-        train_loader = DataLoader(train_data, batch_size=self.batch_size)
+        train_x, train_y, test_x, test_y = Data().load_data()
+        train_loader = DataLoader(train_x, batch_size=self.batch_size)
         train(self.rnn_model, train_loader, 5, self.optimizer, self.loss)
