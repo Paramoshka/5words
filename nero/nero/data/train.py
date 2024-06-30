@@ -31,5 +31,5 @@ def train(model: RNN, data: DataLoader, epochs: int, optimizer: optim.Optimizer,
             for c in range(batch.shape[1]):
                 out, hidden = model(batch[c], hidden)
                 print(out)
-                loss += loss_fn(out, batch[c])
+                #loss += loss_fn(out, batch[c])
 

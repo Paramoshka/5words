@@ -12,13 +12,13 @@ class Command(BaseCommand):
 
     batch_size = 100
     hidden_size = 100
-    output_size = 100
+    output_size = 6
     epochs = 5
     loss = nn.CrossEntropyLoss()
     input_size = 6
     # Model
     # 1 because we enter a single number/letter per step.
-    rnn_model = RNN(input_size, hidden_size, len(alphabet), output_size)
+    rnn_model = RNN(input_size, hidden_size, output_size, batch_size)
     optimizer = optim.RMSprop(rnn_model.parameters(), lr=0.001)
 
     def handle(self, *args, **options):
