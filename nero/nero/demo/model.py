@@ -1,17 +1,25 @@
+import torch
 from torch import nn
-
+import torch.nn.functional as F
 
 class RNN(nn.Module):
     def __init__(self, input_size, hidden_size, output_size):
         super(RNN, self).__init__()
         self.hidden_size = hidden_size
-        self.rnn = nn.RNN(input_size, hidden_size)
-        self.output = nn.Linear(hidden_size, output_size)
+
+        self.i2h = nn.Linear(input_size, hidden_size)
+        self.h2h = nn.Linear(hidden_size, hidden_size)
+        self.h2o = nn.Linear(hidden_size, output_size)
+        self.softmax = nn.LogSoftmax(dim=1)
 
     def forward(self, x, h):
-        # x is a packed sequence of input tensors
-        # h is the initial hidden state
-        out, h = self.rnn(x, h)
-        # out is a sequence of outputs, we only need the last one
-        out = self.output(out[-1])
-        return out, h
+        hidden = F.tanh(self.i2h(x) + self.h2h(h))
+        output = self.h2o(hidden)
+        output = self.softmax(output)
+        return output, hidden
+
+    def init_zero_hidden(self, batch_size) -> torch.Tensor:
+        """
+        Returns a hidden state with specified batch size. Defaults to 1
+        """
+        return torch.zeros(batch_size, self.hidden_size, requires_grad=False)

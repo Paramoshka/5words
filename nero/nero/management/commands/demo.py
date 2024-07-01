@@ -13,7 +13,7 @@ class Command(BaseCommand):
     hidden_size = 16  # The size of our hidden state
     output_size = 10  # The size of our output sequences
     batch_size = 10  # We'll feed batches of size 1 to the network for simplicity
-    epochs = 1
+    epochs = 100
     learning_rate = 1e-1
 
     def handle(self, *args, **options):
