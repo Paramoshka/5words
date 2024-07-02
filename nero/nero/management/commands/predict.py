@@ -23,9 +23,24 @@ class Command(BaseCommand):
         line = self.data.category_lines[category_name]
         #train(self.rnn, category_name, line, )
         self.category_tensor(category_name)
+        self.input_tensor(line)
 
+    # One-hot vector for category
     def category_tensor(self, category_name) -> torch.Tensor:
         li = self.data.all_categories.index(category_name)
         tensor = torch.zeros(1, len(self.data.all_categories))
         tensor[0][li] = 1
         return tensor
+
+    # One-hot matrix of first to last letters (not including EOS) for input
+    def input_tensor(self, line) -> torch.Tensor:
+        tensor = torch.zeros(len(line), 1, n_letters)
+        for li in range(len(line)):
+            word = line[li]
+            for letter in word:
+                tensor[li][0][all_letters.find(letter)] = 1
+            print('Learn word: ' + str(word))
+        return tensor
+
+    def target_tensor(self, line):
+       letter_indexes =
