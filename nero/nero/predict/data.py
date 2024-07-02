@@ -3,6 +3,8 @@ import os
 import string
 import unicodedata
 
+import torch
+
 
 class Data(object):
     path_names_folder = '/home/django/backend/names/*.txt'
@@ -30,3 +32,19 @@ class Data(object):
     def read_lines(self, filename):
         lines = open(filename, encoding='utf-8').read().strip().split('\n')
         return [self.unicode_to_ascii(line) for line in lines]
+
+    def letter_to_index(self, letter):
+        return self.all_letters.find(letter)
+
+    def letter_to_tensor(self, letter):
+        tensor = torch.zeros(1, self.n_letters)
+        tensor[0][self.letter_to_index(letter)] = 1
+        return tensor
+
+    # Turn a line into a <line_length x 1 x n_letters>,
+    # or an array of one-hot letter vectors
+    def line_to_tensor(self, line):
+        tensor = torch.zeros(len(line), 1, self.n_letters)
+        for li, letter in enumerate(line):
+            tensor[li][0][self.letter_to_index(letter)] = 1
+        return tensor
