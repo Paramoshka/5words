@@ -22,8 +22,9 @@ class Command(BaseCommand):
         category_name = self.data.all_categories[random.randint(0, self.n_categories - 1)]
         line = self.data.category_lines[category_name]
         #train(self.rnn, category_name, line, )
-        self.category_tensor(category_name)
-        self.input_tensor(line)
+        category_tensor = self.category_tensor(category_name)
+        input_line_tensor = self.input_tensor(line)
+        target_line_tensor = self.target_tensor(line)
 
     # One-hot vector for category
     def category_tensor(self, category_name) -> torch.Tensor:
@@ -42,5 +43,12 @@ class Command(BaseCommand):
             print('Learn word: ' + str(word))
         return tensor
 
-    def target_tensor(self, line):
-       letter_indexes =
+    def target_tensor(self, line) -> torch.LongTensor:
+        letter_indexes = []
+        for li in range(len(line)):
+            word = line[li]
+            for letter in word:
+                letter_indexes.append(all_letters.find(letter))
+        letter_indexes.append(n_letters - 1)
+
+        return torch.LongTensor(letter_indexes)
