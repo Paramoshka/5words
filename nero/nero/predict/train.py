@@ -7,7 +7,7 @@ from nero.predict.model import RNN
 
 def train(model: RNN, data_lines: [], epochs: int, criterion, all_categories, alpha):
     model.train()
-    print_every = 10
+    print_every = 100
     start = time.time()
 
     for epoch in range(epochs):
@@ -22,16 +22,18 @@ def train(model: RNN, data_lines: [], epochs: int, criterion, all_categories, al
 
             for i in range(input_tensor.size()[0]):
                 output, hidden_layer = model(input_tensor[i], hidden_layer)
-                loss += criterion(output, category_tensor)
+
 
                 if epoch % print_every == 0:
                     guess, guess_i = category_from_output(output, all_categories)
                     correct = '✓' if guess == category else '✗ (%s)' % category
                     print('%d %d%% (%s) %.4f %s / %s %s' % (epoch, epoch / epochs * 100, time_since(start), loss, word, guess, correct))
-            loss.backward()
 
-            for p in model.parameters():
-                p.data.add_(p.grad.data, alpha=alpha)
+                loss += criterion(output, category_tensor)
+        loss.backward()
+
+        for p in model.parameters():
+            p.data.add_(p.grad.data, alpha=alpha)
 
 
 

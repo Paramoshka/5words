@@ -22,8 +22,8 @@ class Command(BaseCommand):
     hidden_size = 128
     learning_rate = 0.001
     criterion = nn.NLLLoss()
-    epochs = 3000
-    count_samples = 1
+    epochs = 300
+    count_samples = 1000
     rnn = RNN(n_letters, hidden_size, n_categories)
 
     def handle(self, *args, **options):
