@@ -1,13 +1,17 @@
+import torch
 from torch import nn
-
+import time
+import math
 from nero.predict.model import RNN
 
 
-def train(model: RNN, data_lines: [], epochs: int, criterion):
+def train(model: RNN, data_lines: [], epochs: int, criterion, all_categories, alpha):
     model.train()
+    print_every = 10
+    start = time.time()
 
     for epoch in range(epochs):
-        loss = 0
+        loss = torch.Tensor([0])
         hidden_layer = model.init_hidden()
         model.zero_grad()
         for w in data_lines:
@@ -19,6 +23,27 @@ def train(model: RNN, data_lines: [], epochs: int, criterion):
             for i in range(input_tensor.size()[0]):
                 output, hidden_layer = model(input_tensor[i], hidden_layer)
                 loss += criterion(output, category_tensor)
-                print("out: " + str(output))
-                print('category_tensor: ' + str(category_tensor))
 
+                if epoch % print_every == 0:
+                    guess, guess_i = category_from_output(output, all_categories)
+                    correct = '✓' if guess == category else '✗ (%s)' % category
+                    print('%d %d%% (%s) %.4f %s / %s %s' % (epoch, epoch / epochs * 100, time_since(start), loss, word, guess, correct))
+            loss.backward()
+
+            for p in model.parameters():
+                p.data.add_(p.grad.data, alpha=alpha)
+
+
+
+def category_from_output(output, all_categories):
+    top_n, top_i = output.topk(1)
+    category_i = top_i[0].item()
+    return all_categories[category_i], category_i
+
+
+def time_since(since):
+    now = time.time()
+    s = now - since
+    m = math.floor(s / 60)
+    s -= m * 60
+    return '%dm %ds' % (m, s)

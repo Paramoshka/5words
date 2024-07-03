@@ -22,14 +22,14 @@ class Command(BaseCommand):
     hidden_size = 128
     learning_rate = 0.001
     criterion = nn.NLLLoss()
-    epochs = 1
+    epochs = 3000
     count_samples = 1
     rnn = RNN(n_letters, hidden_size, n_categories)
 
     def handle(self, *args, **options):
         self.stdout.write(self.style.SUCCESS('Predict'))
         list_data = self.train_data(self.count_samples)
-        train(self.rnn, list_data, self.epochs, self.criterion)
+        train(self.rnn, list_data, self.epochs, self.criterion, self.data.all_categories, self.learning_rate)
 
 
     def random_choice(l):
