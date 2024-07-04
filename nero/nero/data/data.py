@@ -1,42 +1,30 @@
-import csv
-import numpy as np
+import torch
 
+
+def read_lines(filename):
+    lines = open(filename, encoding='utf-8').read().strip().split('\n')
+    return lines
 
 
 class Data(object):
-
-    labels = []
     def __init__(self):
-        data = []
-        arr = list()
+        self.cyrillic_letters = ''.join(map(chr, range(ord('А'), ord('я') + 1))) + 'Ёё'
 
-        with open('words.csv', newline='') as csvfile:
-            reader = csv.DictReader(csvfile)
-            for row in reader:
-                data.append(np.array(row['vector']))
-                self.labels.append(row['word'])
+    def get_len_alphabet(self) -> int:
+        return len(self.cyrillic_letters)
 
-        for d in data:
-            d = str(d).strip('[]')
-            d = str(d).split('.')
-            d.pop()
-            arr.append(np.array(d))
+    def get_alphabet(self) -> list:
+        return list(self.cyrillic_letters)
 
-        self.int_arr = np.empty((len(arr), len(arr[0])))
+    def letter_to_tensor(self, letter) -> torch.Tensor:
+        tensor = torch.zeros(1, len(self.cyrillic_letters))
+        index = self.cyrillic_letters.index(letter)
+        tensor[0][index] = 1
+        return tensor
 
-        for k, v in enumerate(arr):
-            self.int_arr[k] = v
-
-        mask = np.random.binomial(n=1, p=0.5, size=(len(arr), len(arr[0])))
-
-        self.train_arr = np.multiply(self.int_arr, mask)
-
-    """
-    return arrays n x n, labels and train data where random zeros
-    [26., 13., 32., 23.,  6.,  0.],
-    .....
-    [21., 19.,  1., 20.,  1.,  0.]
-    """
-    def load_data(self):
-        return self.int_arr, self.labels,  self.train_arr, self.labels
-
+    def word_to_tensor(self, word) -> torch.Tensor:
+        tensor = torch.zeros(len(word), 1, len(self.cyrillic_letters))
+        for li, letter in enumerate(word):
+            index = self.cyrillic_letters.index(letter)
+            tensor[li][0][index] = 1
+        return tensor
