@@ -1,4 +1,5 @@
 import torch
+from torch import nn
 
 from nero.data.data import Data
 from nero.data.model import RNN
@@ -7,12 +8,21 @@ from nero.data.model import RNN
 def train(model: RNN, data: Data, epochs: int, alpha) -> None:
     model.train()
     dataset = get_dataset(data)
+    loss = torch.Tensor([0])
+    criterion = nn.NLLLoss()
+    hidden_layer = model.init_hidden()
+    model.zero_grad()
+
     for epoch in range(epochs):
-        hidden_layer = model.init_hidden()
         for target, input_word in dataset.items():
             for li in range(input_word.size()[0]):
                 output, hidden_layer = model(input_word[li], hidden_layer)
-                print(output)
+                loss += criterion(output, target)
+                loss.backward(retain_graph=True)
+
+                for p in model.parameters():
+                    p.data.add_(p.grad.data, alpha=-alpha)
+
 
 
 def get_dataset(data: Data) -> dict:
@@ -23,3 +33,9 @@ def get_dataset(data: Data) -> dict:
         target_tensor = data.word_to_target_tensor(w)
         d[target_tensor] = input_tensor
     return d
+
+
+def word_from_output(output, data: Data):
+    top_n, top_i = output.topk(1)
+    word_i = top_i[0].item()
+    return data.five_words[word_i], word_i
