@@ -12,8 +12,7 @@ services:
       POSTGRES_HOST: ${POSTGRES_HOST}
     volumes:
       - "./nero/:/home/django/backend/"
-     # - "./names/:/home/django/backend/names/"
-      #- "./russian.txt:/home/django/backend/russian.txt"
+      - "./russian.txt:/home/django/backend/russian.txt:ro"
     ports:
       - "8000:8000"
     depends_on:
