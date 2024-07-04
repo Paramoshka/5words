@@ -8,7 +8,7 @@ def read_lines(filename):
 def get_5words_list(words: list) -> list:
     five_words = list()
     for word in words:
-        if len(word) == 6:
+        if len(word) == 5:
             five_words.append(word)
     return five_words
 
@@ -37,3 +37,7 @@ class Data(object):
             index = self.cyrillic_letters.index(letter)
             tensor[li][0][index] = 1
         return tensor
+
+    def word_to_target_tensor(self, word) -> torch.Tensor:
+        print("index:  " + self.five_words.index(word).__str__())
+        return torch.tensor([self.five_words.index(word)], dtype=torch.long)

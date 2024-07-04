@@ -1,19 +1,21 @@
 from django.core.management import BaseCommand
 from torch import optim, nn
-
 from nero.data.data import Data
 from nero.data.model import RNN
-from torch.utils.data.dataloader import DataLoader
-from nero.data.alphabet import alphabet
 from nero.data.train import train
 
 #https://botfactory.in/2023/06/07/building-a-simple-rnn-neural-network-with-pytorch-a-step-by-step-guide/
 class Command(BaseCommand):
+    hidden_size = 64
+    output_size = 1
+    data = Data()
+    rnn = RNN(data.get_len_alphabet(), hidden_size, output_size)
+
     def handle(self, *args, **options):
         self.stdout.write(self.style.SUCCESS('Train model'))
 
-        data = Data()
-        test = data.five_words[:1]
-        tessor = data.word_to_tensor(test)
-        print(tessor)
+
+        test_data = data.five_words[:5]
+        train()
+
 
