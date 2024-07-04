@@ -36,7 +36,7 @@ def train(model: RNN, data: Data, epochs: int, alpha) -> None:
 def get_dataset(data: Data) -> dict:
     d = dict()
     words = data.five_words
-    for w in words[:1]:
+    for w in words:
         input_tensor = data.word_to_tensor(w)
         target_tensor = data.word_to_target_tensor(w)
         d[target_tensor] = input_tensor
