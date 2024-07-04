@@ -7,9 +7,9 @@ from nero.data.train import train
 
 class Command(BaseCommand):
     data = Data()
-    hidden_size = 64
+    hidden_size = 256
     output_size = len(data.five_words)
-    alpha = 0.001
+    alpha = 0.01
     epochs = 10
     rnn = RNN(data.get_len_alphabet(), hidden_size, output_size)
 
