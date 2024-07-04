@@ -1,3 +1,5 @@
+import sys
+
 import torch
 from torch import nn
 
@@ -12,6 +14,7 @@ def train(model: RNN, data: Data, epochs: int, alpha) -> None:
     criterion = nn.NLLLoss()
     hidden_layer = model.init_hidden()
     model.zero_grad()
+    print_every = 10
 
     for epoch in range(epochs):
         for target, input_word in dataset.items():
@@ -23,6 +26,11 @@ def train(model: RNN, data: Data, epochs: int, alpha) -> None:
                 for p in model.parameters():
                     p.data.add_(p.grad.data, alpha=-alpha)
 
+                if epoch % print_every == 0:
+                    guess, guess_i = word_from_output(output, data)
+                    true_word = data.five_words[target.item()]
+                    correct = '✓' if guess == true_word else '✗ (%s)' % true_word
+                    sys.stdout.write(str(guess) + " -> " + str(guess_i) + str(correct) + f'word: {true_word}' + '\r')
 
 
 def get_dataset(data: Data) -> dict:
