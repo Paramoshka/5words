@@ -30,7 +30,7 @@ def train(model: RNN, data: Data, epochs: int, alpha) -> None:
                     guess, guess_i = word_from_output(output, data)
                     true_word = data.five_words[target.item()]
                     correct = '✓' if guess == true_word else '✗ (%s)' % true_word
-                    sys.stdout.write("Gues: " + str(guess) + " -> " + str(guess_i) + " correct: " + str(f'{ correct}') +  '\r')
+                    sys.stdout.write("Gues: " + str(guess) + " -> " + str(guess_i) + " correct: " + str(f'{ correct}') + '\n' )
 
 
 def get_dataset(data: Data) -> dict:

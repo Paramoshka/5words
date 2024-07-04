@@ -6,11 +6,11 @@ from nero.data.train import train
 
 
 class Command(BaseCommand):
-    hidden_size = 64
-    output_size = 5
-    alpha = 0.001
-    epochs = 100
     data = Data()
+    hidden_size = 64
+    output_size = len(data.five_words)
+    alpha = 0.001
+    epochs = 10
     rnn = RNN(data.get_len_alphabet(), hidden_size, output_size)
 
     def handle(self, *args, **options):
