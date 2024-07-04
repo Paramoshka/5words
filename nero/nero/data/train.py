@@ -1,35 +1,25 @@
 import torch
-from torch import optim, nn
-from torch.utils.data import DataLoader
+
+from nero.data.data import Data
 from nero.data.model import RNN
 
 
-
-def train(model: RNN, data: DataLoader, epochs: int, optimizer: optim.Optimizer, loss_fn: nn.Module) -> None:
-    """
-    Trains the model for the specified number of epochs
-    Inputs
-    ------
-    model: RNN model to train
-    data: Iterable DataLoader
-    epochs: Number of epochs to train the model
-    optimizer: Optimizer to use for each epoch
-    loss_fn: Function to calculate loss
-    """
-
+def train(model: RNN, data: Data, epochs: int, alpha) -> None:
     model.train()
+    dataset = get_dataset(data)
+    for epoch in range(epochs):
+        hidden_layer = model.init_hidden()
+        for target, input_word in dataset.items():
+            for li in range(input_word.size()[0]):
+                output, hidden_layer = model(input_word[li], hidden_layer)
+                print(output)
 
-    for epoch in range(1):
-        for batch in data:
-            # skip batch if it doesnt match with the batch_size
-            if batch.shape[0] != model.batch_size:
-                continue
 
-            hidden = model.init_zero_hidden(batch_size=batch.shape[0])
-            loss = 0
-
-            for c in range(batch.shape[1]):
-                out, hidden = model(batch[c], hidden)
-                print(out)
-                #loss += loss_fn(out, batch[c])
-
+def get_dataset(data: Data) -> dict:
+    d = dict()
+    words = data.five_words
+    for w in words[:1]:
+        input_tensor = data.word_to_tensor(w)
+        target_tensor = data.word_to_target_tensor(w)
+        d[target_tensor] = input_tensor
+    return d

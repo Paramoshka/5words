@@ -39,5 +39,5 @@ class Data(object):
         return tensor
 
     def word_to_target_tensor(self, word) -> torch.Tensor:
-        print("index:  " + self.five_words.index(word).__str__())
+        #print("index:  " + self.five_words.index(word).__str__())
         return torch.tensor([self.five_words.index(word)], dtype=torch.long)
