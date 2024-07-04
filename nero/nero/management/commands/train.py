@@ -13,4 +13,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('Train model'))
 
         data = Data()
-        print(data.letter_to_tensor('х'))
+        test = data.five_words[:1]
+        tessor = data.word_to_tensor(test)
+        print(tessor)
+

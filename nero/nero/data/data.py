@@ -2,16 +2,23 @@ import torch
 
 
 def read_lines(filename):
-    lines = open(filename, encoding='utf-8').read().strip().split('\n')
+    lines = open(filename, encoding='windows-1251').read().strip().split('\n')
     return lines
 
+def get_5words_list(words: list) -> list:
+    five_words = list()
+    for word in words:
+        if len(word) == 6:
+            five_words.append(word)
+    return five_words
 
 class Data(object):
 
-    filename = ''
+    filename = '/home/django/backend/russian.txt'
     def __init__(self):
         self.cyrillic_letters = ''.join(map(chr, range(ord('А'), ord('я') + 1))) + 'Ёё'
-
+        words = read_lines(self.filename)
+        self.five_words = get_5words_list(words)
     def get_len_alphabet(self) -> int:
         return len(self.cyrillic_letters)
 
