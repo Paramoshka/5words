@@ -7,6 +7,8 @@ def read_lines(filename):
 
 
 class Data(object):
+
+    filename = ''
     def __init__(self):
         self.cyrillic_letters = ''.join(map(chr, range(ord('А'), ord('я') + 1))) + 'Ёё'
 
