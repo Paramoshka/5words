@@ -12,11 +12,12 @@ def train(model: RNN, data: Data, epochs: int, alpha) -> None:
     dataset = get_dataset(data)
     loss = torch.Tensor([0])
     criterion = nn.NLLLoss()
-    hidden_layer = model.init_hidden()
-    model.zero_grad()
+
     print_every = 10
 
     for epoch in range(epochs):
+        hidden_layer = model.init_hidden()
+        model.zero_grad()
         for target, input_word in dataset.items():
             for li in range(input_word.size()[0]):
                 output, hidden_layer = model(input_word[li], hidden_layer)
