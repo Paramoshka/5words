@@ -12,12 +12,11 @@ def train(model: RNN, data: Data, epochs: int, alpha) -> None:
     dataset = get_dataset(data)
     loss = torch.Tensor([0])
     criterion = nn.NLLLoss()
-
+    hidden_layer = model.init_hidden()
     print_every = 10
+    model.zero_grad()
 
     for epoch in range(epochs):
-        hidden_layer = model.init_hidden()
-        model.zero_grad()
         for target, input_word in dataset.items():
             for li in range(input_word.size()[0]):
                 output, hidden_layer = model(input_word[li], hidden_layer)
@@ -30,14 +29,14 @@ def train(model: RNN, data: Data, epochs: int, alpha) -> None:
                 if epoch % print_every == 0:
                     guess, guess_i = word_from_output(output, data)
                     true_word = data.five_words[target.item()]
-                    correct = '✓' if guess == true_word else '✗ (%s)' % true_word
+                    correct = '✓ (%s)' % true_word if guess == true_word else '✗ (%s)' % true_word
                     sys.stdout.write("Gues: " + str(guess) + " -> " + str(guess_i) + " correct: " + str(f'{ correct}') + '\n' )
 
 
 def get_dataset(data: Data) -> dict:
     d = dict()
     words = data.five_words
-    for w in words[:10]:
+    for w in words[:2]:
         input_tensor = data.word_to_tensor(w)
         target_tensor = data.word_to_target_tensor(w)
         d[target_tensor] = input_tensor
